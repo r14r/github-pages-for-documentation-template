@@ -1,10 +1,8 @@
 # GitHub Pages documentation template
 
-Reusable Jekyll / Minimal Mistakes documentation website with hierarchical navigation and sticky scroll-aware right TOC.
+Reusable Jekyll / Minimal Mistakes documentation website with nested navigation and a sticky scroll-aware TOC.
 
-## Install and develop
-
-Install Ruby, Bundler and `just`.
+## Quick start
 
 ```sh
 just install
@@ -14,53 +12,20 @@ just build
 just run
 ```
 
-Local URL in the included example:
-http://127.0.0.1:4000/github-pages-for-documentation-template/
+Local URL: http://127.0.0.1:4000/github-pages-for-documentation-template/
 
-## GitHub Pages: Deploy from a branch, main /docs
+Public URL: https://r14r.github.io/github-pages-for-documentation-template/
 
-Place the **Jekyll source at repository root**. Configure Settings → Pages → **Deploy from a branch**, branch `main`, folder `/docs`.
+## GitHub Pages deployment (required setting)
 
-`just build` generates static files under `docs/` with `docs/.nojekyll`. To publish them, commit and push those generated files:
+In **Settings → Pages → Build and deployment**, select **Source: GitHub Actions** (NOT "Deploy from a branch").
 
-```sh
-just build
-git add -A docs
-git commit -m "docs: publish generated site"
-git push origin main
-```
+The checked-in `.github/workflows/pages.yml` builds the site using Bundler (which installs the Minimal Mistakes theme), uploads the generated `_site/` files, and deploys via the official GitHub Pages actions. The legacy GitHub Pages automatic Jekyll build cannot resolve the theme gem and must not be used.
 
-A GitHub Actions workflow **validates** the build, but intentionally does not push generated files. Commits written with its normal `GITHUB_TOKEN` do not trigger a new Pages build. Generate and commit from a normal developer account, or use a separately authorized publishing workflow.
+The local `just build` command still writes `docs/` for optional static export, but that folder is **not the deployment source** when using the recommended GitHub Actions configuration. Do not commit `docs/` merely to deploy Pages.
 
-The folder `docs/` controls where Pages reads files; it is **not part of the final URL**.
+## Adapt to another repository
 
-## Destination URL configuration
+Update `url`, `baseurl`, `project.name` and `project.url` in `_config.yml` to match the destination GitHub Pages URL. Do not include the `docs/` directory name in `baseurl`.
 
-For https://r14r.github.io/github-pages-for-documentation-template/:
-
-```yaml
-url: "https://r14r.github.io"
-baseurl: "/github-pages-for-documentation-template"
-project:
-  url: "https://r14r.github.io/github-pages-for-documentation-template/"
-```
-
-Change `baseurl` and `project.url` for each repository built from this template. The template's example is not automatically derived from the repository name.
-
-`just test` uses `_site/`; `just build` uses `docs/`; `just run` serves locally using the configured baseurl. `just clean` deletes generated output, including `docs/`; do not put source content under `docs/`.
-
-Update CLI compatibility can be checked with `update-cli doctor` and `update-cli setup --list`.
-
-## Publishing branch-based Pages
-
-With Settings → Pages configured to **main /docs**, the generated site must be committed:
-
-```sh
-just build
-git add -f docs/.nojekyll
-git add -A docs/
-git commit -m "docs: publish generated static website"
-git push origin main
-```
-
-The generated `docs/index.html` must exist on GitHub. The `docs` folder is not part of the public URL. The included Actions workflow validates the build but does not commit `docs/` for you.
+See `just --list` for local commands. `update-cli doctor` validates the Update CLI manifest with your installed version.
