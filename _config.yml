@@ -10,6 +10,10 @@ permalink: pretty
 search: true
 plugins:
   - jekyll-include-cache
+# Minimal Mistakes bundles legacy SCSS containing Sass slash-division deprecations.
+# Report our own Sass warnings; avoid dependency warnings until the theme migrates.
+sass:
+  quiet_deps: true
 defaults:
   - scope:
       path: ""
