@@ -1,7 +1,7 @@
 title: Documentation Template
 description: Reusable Jekyll documentation website
 url: "https://r14r.github.io"
-baseurl: ""
+baseurl: "/github-pages-for-documentation-template"
 project:
   name: Documentation Template
   url: "https://r14r.github.io/github-pages-for-documentation-template/"
