@@ -1,7 +1,7 @@
 title: Documentation Template
 description: Reusable Jekyll documentation website
 url: "https://r14r.github.io"
-baseurl: "/unified-office-workshop-public"
+baseurl: "/"
 project:
   name: Documentation Template
   url: "https://r14r.github.io/unified-office-workshop-public/"
