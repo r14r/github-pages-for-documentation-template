@@ -1,37 +1,23 @@
-name: Build documentation for branch Pages
+name: Validate Jekyll documentation
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'docs/**'
   pull_request:
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - name: Test and build into docs/
+      - name: Validate and build
         run: |
           bundle exec jekyll build --strict_front_matter --destination _site
           bundle exec jekyll build --strict_front_matter --destination docs
           touch docs/.nojekyll
           test -s docs/index.html
-      - name: Commit published site
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A docs
-          if ! git diff --cached --quiet; then
-            git commit -m "docs: regenerate GitHub Pages output [skip ci]"
-            git push
-          fi

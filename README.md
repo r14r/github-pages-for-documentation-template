@@ -1,8 +1,8 @@
 # GitHub Pages documentation template
 
-Reusable Jekyll / Minimal Mistakes documentation website with three-column layout, nested navigation and scroll-aware sticky TOC.
+Reusable Jekyll / Minimal Mistakes documentation website with hierarchical navigation and sticky scroll-aware right TOC.
 
-## Quick start
+## Install and develop
 
 Install Ruby, Bundler and `just`.
 
@@ -14,20 +14,29 @@ just build
 just run
 ```
 
-Local preview (as configured for the example destination):
+Local URL in the included example:
 http://127.0.0.1:4000/unified-office-workshop-public/
 
-## GitHub Pages: branch-based publication
+## GitHub Pages: Deploy from a branch, main /docs
 
-This template is configured for **Settings → Pages → Deploy from a branch → main /docs**.
+Place the **Jekyll source at repository root**. Configure Settings → Pages → **Deploy from a branch**, branch `main`, folder `/docs`.
 
-Source stays at repository root. `just build` writes the generated static website to `docs/` and creates `docs/.nojekyll` so Pages does not attempt to run another Jekyll build.
+`just build` generates static files under `docs/` with `docs/.nojekyll`. To publish them, commit and push those generated files:
 
-A GitHub Actions workflow checks the project and commits regenerated `docs/` contents to `main` after pushes. GitHub Pages serves the committed `docs/` directory; the folder name is **not** part of the public URL. On protected branches, direct workflow pushes may be rejected; configure an appropriately authorized deployment process instead.
+```sh
+just build
+git add -A docs
+git commit -m "docs: publish generated site"
+git push origin main
+```
 
-## Project URLs
+A GitHub Actions workflow **validates** the build, but intentionally does not push generated files. Commits written with its normal `GITHUB_TOKEN` do not trigger a new Pages build. Generate and commit from a normal developer account, or use a separately authorized publishing workflow.
 
-For https://r14r.github.io/unified-office-workshop-public/ use:
+The folder `docs/` controls where Pages reads files; it is **not part of the final URL**.
+
+## Destination URL configuration
+
+For https://r14r.github.io/unified-office-workshop-public/:
 
 ```yaml
 url: "https://r14r.github.io"
@@ -36,12 +45,8 @@ project:
   url: "https://r14r.github.io/unified-office-workshop-public/"
 ```
 
-When copying this template to a different repository, replace `unified-office-workshop-public` in `_config.yml` with the destination repository name. The `docs/` build location does not change the `baseurl`.
+Change `baseurl` and `project.url` for each repository built from this template. The template's example is not automatically derived from the repository name.
 
-## Notes
+`just test` uses `_site/`; `just build` uses `docs/`; `just run` serves locally using the configured baseurl. `just clean` deletes generated output, including `docs/`; do not put source content under `docs/`.
 
-- `just test` builds a temporary verification site under `_site/`.
-- `just build` generates `docs/` for publication.
-- `just run` serves locally using the configured `baseurl`.
-- `just clean` deletes the generated `docs/` and `_site/` directories; do not put authored source files under `docs/`.
-- Run `update-cli doctor` and `update-cli setup --list` to validate your installed Update CLI version.
+Update CLI compatibility can be checked with `update-cli doctor` and `update-cli setup --list`.
