@@ -13,9 +13,10 @@
     const scrollbox = toc.querySelector('.toc__menu') || toc;
     let active = null;
     let queued = false;
+    const topOffset = () => (document.querySelector('.masthead')?.getBoundingClientRect().height || 0) + 16;
     function refresh() {
       queued = false;
-      const threshold = Math.max(100, (document.querySelector('.masthead')?.getBoundingClientRect().height || 0) + 48);
+      const threshold = topOffset() + 2;
       let selected = items[0];
       for (const item of items) {
         if (item.heading.getBoundingClientRect().top <= threshold) selected = item;
@@ -33,7 +34,17 @@
         scrollbox.scrollTo({top:scrollbox.scrollTop+a.top-b.top-b.height/2+a.height/2,behavior:'smooth'});
       }
     }
-    function schedule() { if (!queued) {queued = true; requestAnimationFrame(refresh);} }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(refresh); } }
+    toc.addEventListener('click', event => {
+      const link = event.target.closest('a[href*="#"]');
+      const item = items.find(entry => entry.link === link);
+      if (!item) return;
+      event.preventDefault();
+      history.pushState(null, '', item.link.getAttribute('href'));
+      const desiredTop = item.heading.getBoundingClientRect().top + window.scrollY - topOffset();
+      window.scrollTo({top:Math.max(0,desiredTop),behavior:'smooth'});
+      schedule();
+    });
     addEventListener('scroll',schedule,{passive:true});
     addEventListener('resize',schedule,{passive:true});
     addEventListener('hashchange',schedule);
