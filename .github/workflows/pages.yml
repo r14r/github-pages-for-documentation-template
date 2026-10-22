@@ -1,38 +1,37 @@
-name: Pages
+name: Build documentation for branch Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
   pull_request:
   workflow_dispatch:
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-concurrency:
-  group: pages
-  cancel-in-progress: true
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - name: Build
-        run: bundle exec jekyll build --strict_front_matter --destination _site
-      - uses: actions/upload-pages-artifact@v4
-        if: github.event_name != 'pull_request'
-        with:
-          path: _site
-  deploy:
-    if: github.event_name != 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Test and build into docs/
+        run: |
+          bundle exec jekyll build --strict_front_matter --destination _site
+          bundle exec jekyll build --strict_front_matter --destination docs
+          touch docs/.nojekyll
+          test -s docs/index.html
+      - name: Commit published site
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A docs
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: regenerate GitHub Pages output [skip ci]"
+            git push
+          fi
