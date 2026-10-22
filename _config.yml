@@ -1,0 +1,31 @@
+title: Documentation Template
+description: Reusable Jekyll documentation website
+url: "https://r14r.github.io"
+baseurl: "/github-pages-for-documentation-template"
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: default
+locale: en
+markdown: kramdown
+permalink: pretty
+search: true
+plugins:
+  - jekyll-include-cache
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: single
+      toc: true
+      toc_label: "On this page"
+      toc_sticky: true
+      sidebar:
+        nav: docs
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - justfile
+  - SOURCE.md
+  - VERSION
+  - update-cli.yaml
+  - vendor

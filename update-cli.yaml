@@ -1,0 +1,40 @@
+schemaVersion: 2
+project:
+  name: GitHub Pages Documentation Template
+  slug: github-pages-for-documentation-template
+  type: generic
+
+workflows:
+  bootstrap:
+    tasks: [bootstrap]
+  setup:
+    tasks: [setup]
+  test:
+    tasks: [test]
+  build:
+    tasks: [build]
+  ci:
+    tasks: [ci]
+tasks:
+  bootstrap:
+    steps:
+      - id: bootstrap
+        shell: just bootstrap
+  setup:
+    steps:
+      - id: setup
+        shell: just setup
+  test:
+    steps:
+      - id: test
+        shell: just test
+  build:
+    steps:
+      - id: build
+        shell: just build
+  ci:
+    steps:
+      - id: ci
+        shell: just ci
+run:
+  command: just run
