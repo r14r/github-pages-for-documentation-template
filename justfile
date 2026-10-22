@@ -28,17 +28,21 @@ test: lint
     bundle exec jekyll build --strict_front_matter --destination _site
 
 build: test
-    @test -s _site/index.html
+    bundle exec jekyll build --strict_front_matter --destination docs
+    @touch docs/.nojekyll
+    @test -s docs/index.html
 
 ci: build
-    @test -s _site/index.html
+    @test -s docs/index.html
 
 precommit: test
 
 run: bootstrap
-    bundle exec jekyll serve --host {{host}} --port {{port}} --livereload
+    bundle exec jekyll serve --host {{host}} --port {{port}} --livereload --destination _site
 
 serve: run
 
 clean:
     bundle exec jekyll clean
+    @rm -rf docs
+

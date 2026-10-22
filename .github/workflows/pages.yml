@@ -1,4 +1,4 @@
-name: Pages
+name: Validate Jekyll documentation
 on:
   push:
     branches: [main]
@@ -6,11 +6,6 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-  pages: write
-  id-token: write
-concurrency:
-  group: pages
-  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,19 +15,9 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - name: Build
-        run: bundle exec jekyll build --strict_front_matter --destination _site
-      - uses: actions/upload-pages-artifact@v4
-        if: github.event_name != 'pull_request'
-        with:
-          path: _site
-  deploy:
-    if: github.event_name != 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Validate and build
+        run: |
+          bundle exec jekyll build --strict_front_matter --destination _site
+          bundle exec jekyll build --strict_front_matter --destination docs
+          touch docs/.nojekyll
+          test -s docs/index.html
