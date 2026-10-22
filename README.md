@@ -15,7 +15,7 @@ just run
 ```
 
 Local URL in the included example:
-http://127.0.0.1:4000/unified-office-workshop-public/
+http://127.0.0.1:4000/github-pages-for-documentation-template/
 
 ## GitHub Pages: Deploy from a branch, main /docs
 
@@ -36,13 +36,13 @@ The folder `docs/` controls where Pages reads files; it is **not part of the fin
 
 ## Destination URL configuration
 
-For https://r14r.github.io/unified-office-workshop-public/:
+For https://r14r.github.io/github-pages-for-documentation-template/:
 
 ```yaml
 url: "https://r14r.github.io"
-baseurl: "/unified-office-workshop-public"
+baseurl: "/github-pages-for-documentation-template"
 project:
-  url: "https://r14r.github.io/unified-office-workshop-public/"
+  url: "https://r14r.github.io/github-pages-for-documentation-template/"
 ```
 
 Change `baseurl` and `project.url` for each repository built from this template. The template's example is not automatically derived from the repository name.
@@ -50,3 +50,17 @@ Change `baseurl` and `project.url` for each repository built from this template.
 `just test` uses `_site/`; `just build` uses `docs/`; `just run` serves locally using the configured baseurl. `just clean` deletes generated output, including `docs/`; do not put source content under `docs/`.
 
 Update CLI compatibility can be checked with `update-cli doctor` and `update-cli setup --list`.
+
+## Publishing branch-based Pages
+
+With Settings → Pages configured to **main /docs**, the generated site must be committed:
+
+```sh
+just build
+git add -f docs/.nojekyll
+git add -A docs/
+git commit -m "docs: publish generated static website"
+git push origin main
+```
+
+The generated `docs/index.html` must exist on GitHub. The `docs` folder is not part of the public URL. The included Actions workflow validates the build but does not commit `docs/` for you.
