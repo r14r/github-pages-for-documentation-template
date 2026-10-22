@@ -9,12 +9,15 @@ workflows:
     tasks: [bootstrap]
   setup:
     tasks: [setup]
+  precommit:
+    tasks: [precommit]
   test:
     tasks: [test]
   build:
     tasks: [build]
   ci:
     tasks: [ci]
+
 tasks:
   bootstrap:
     steps:
@@ -24,6 +27,10 @@ tasks:
     steps:
       - id: setup
         shell: just setup
+  precommit:
+    steps:
+      - id: precommit
+        shell: just precommit
   test:
     steps:
       - id: test
@@ -36,5 +43,6 @@ tasks:
     steps:
       - id: ci
         shell: just ci
+
 run:
   command: just run
